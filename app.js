@@ -2,13 +2,15 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+require('dotenv').config();
+
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 
 const booksRouter = require('./routes/books');
 
 mongoose
-  .connect('mongodb+srv://veronicamhannah:Lewis@cluster0.pa9ui6x.mongodb.net/?retryWrites=true&w=majority', {
+  .connect(process.env.MONGOURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
