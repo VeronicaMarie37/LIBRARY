@@ -16,7 +16,7 @@ function newBook(req, res) {
 
 async function index(req, res) {
   try {
-    const allBooks = await Book.find();
+    const allBooks = await Book.find({});
     res.render('books/index', {
       books: allBooks
     });
