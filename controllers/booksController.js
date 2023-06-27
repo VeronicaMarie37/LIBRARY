@@ -1,88 +1,77 @@
-const Book = require('../models/bookModel');
+const Book = require('../models/book');
 
 module.exports = {
-  // Render the form for creating a new book
-  createForm: (req, res) => {
-    res.render('create');
-  },
-
-  // Create a new book
-  create: async (req, res) => {
-    try {
-      const { title, author, date, genre, numberOfPages } = req.body;
-      const book = await Book.create({
-        title,
-        author,
-        date,
-        genre,
-        numberOfPages,
-      });
-      res.redirect('/books');
-    } catch (err) {
-      console.error(err);
-      res.redirect('/books');
-    }
-  },
-
-  // Read all books
-  index: async (req, res) => {
-    try {
-      const books = await Book.find();
-      res.render('index', { books });
-    } catch (err) {
-      console.error(err);
-      res.redirect('/');
-    }
-  },
-
-  // Read a specific book
-  show: async (req, res) => {
-    try {
-      const book = await Book.findById(req.params.id);
-      res.render('show', { book });
-    } catch (err) {
-      console.error(err);
-      res.redirect('/books');
-    }
-  },
-
-  // Render the form for editing a book
-  editForm: async (req, res) => {
-    try {
-      const book = await Book.findById(req.params.id);
-      res.render('edit', { book });
-    } catch (err) {
-      console.error(err);
-      res.redirect('/books');
-    }
-  },
-
-  // Update a book
-  update: async (req, res) => {
-    try {
-      const { title, author, date, genre, numberOfPages } = req.body;
-      await Book.findByIdAndUpdate(req.params.id, {
-        title,
-        author,
-        date,
-        genre,
-        numberOfPages,
-      });
-      res.redirect('/books/' + req.params.id);
-    } catch (err) {
-      console.error(err);
-      res.redirect('/books');
-    }
-  },
-
-  // Delete a book
-  destroy: async (req, res) => {
-    try {
-      await Book.findByIdAndRemove(req.params.id);
-      res.redirect('/books');
-    } catch (err) {
-      console.error(err);
-      res.redirect('/books');
-    }
-  },
+  new: newBook,
+  index,
+  create,
+  delete: deleteBook,
+  update,
+  edit,
+  show
 };
+
+function newBook(req, res) {
+  res.render('books/new', { errorMsg: '' });
+}
+
+async function index(req, res) {
+  try {
+    const allBooks = await Book.find();
+    res.render('books/index', {
+      books: allBooks
+    });
+  } catch (err) {
+    console.error(err);
+    res.render('books', { errorMsg: err.message });
+  }
+}
+
+async function create(req, res) {
+  try {
+    await Book.create(req.body);
+    res.redirect('/books');
+  } catch (err) {
+    console.error(err);
+    res.render('books/new', { errorMsg: err.message });
+  }
+}
+
+async function deleteBook(req, res) {
+  try {
+    await Book.findByIdAndRemove(req.params.id);
+    res.redirect('/books');
+  } catch (err) {
+    console.error(err);
+    res.render('books', { errorMsg: err.message });
+  }
+}
+
+async function update(req, res) {
+  try {
+    await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.redirect(`/books`);
+  } catch (err) {
+    console.error(err);
+    res.render(`books/${req.params.id}/edit`, { errorMsg: err.message });
+  }
+}
+
+async function edit(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    res.render('books/edit', { book });
+  } catch (err) {
+    console.error(err);
+    res.render('books', { errorMsg: err.message });
+  }
+}
+
+async function show(req, res) {
+  try {
+    const book = await Book.findById(req.params.id);
+    res.render('books/show', { book });
+  } catch (err) {
+    console.error(err);
+    res.render('books', { errorMsg: err.message });
+  }
+}

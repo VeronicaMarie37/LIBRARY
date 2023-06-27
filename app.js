@@ -8,6 +8,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 
 const booksRouter = require('./routes/books');
+const indexRouter = require('./routes/index');
 
 mongoose
   .connect(process.env.MONGOURL, {
@@ -36,16 +37,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
 // Define routes
+app.use('/', indexRouter)
 app.use('/books', booksRouter); // Use '/books' as the prefix for booksRouter
 
-// Error handler
-app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// // Error handler
+// app.use(function (err, req, res, next) {
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  res.status(err.status || 500);
-  res.render('error');
-});
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
 // Start the server
 const port = 4000;
