@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Details</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+  <h1>Book Details</h1>
+  <div class="book-details">
+    <h2><%= book.title %></h2>
+    <p><strong>Author:</strong> <%= book.author %></p>
+    <p><strong>Date:</strong> <%= book.date %></p>
+    <p><strong>Genre:</strong> <%= book.genre %></p>
+    <p><strong>Number of Pages:</strong> <%= book.numberOfPages %></p>
+   
+    <div class="buttons">
+      <a href="/books/<%= book._id %>/edit" class="button">Update</a>
+      <form action="/books/<%= book._id %>?_method=DELETE" method="POST">
+        <button type="submit" class="button">Delete</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+
